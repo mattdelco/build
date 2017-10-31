@@ -63,4 +63,5 @@ GCS_PATH="gs://${COMMON_URI_SUFFIX}"
 
 gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
 
+echo "${COMMIT_TAG}" > "${VERSION_FILE}"
 gsutil cp "${VERSION_FILE}" "${GCS_PATH}/"

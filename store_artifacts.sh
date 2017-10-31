@@ -18,6 +18,7 @@ DAY_PATH=`date +%Y%m%d`
 PROJECT_NAME="istio-testing"
 BRANCH_NAME="unknown"
 ARTIFACTS_OUTPUT_PATH=""
+PATH_SUFFIX=""
 
 function usage() {
   echo "$0
@@ -26,7 +27,8 @@ function usage() {
     -d        daily build (default)
     -o        path to store build artifacts instead of GCS/GCR/docker
     -p        specifies project name (default $PROJECT_NAME)
-    -s <hash> sha1 commit hash of change"
+    -s <hash> sha1 commit hash of change
+    -x        extra path suffix at end"
   exit 1
 }
 
@@ -38,6 +40,7 @@ while getopts b:cdo:p:s: arg ; do
     o) ARTIFACTS_OUTPUT_PATH="${OPTARG}";;
     p) PROJECT_NAME="${OPTARG}";;
     s) COMMIT_TAG="${OPTARG}";;
+    x) PATH_SUFFIX="${OPTARG}";;
     *) usage;;
   esac
 done
@@ -48,14 +51,14 @@ if [[ "${BUILD_TYPE}" == "daily" ]]; then
     usage
     exit 1
   fi
-  COMMON_URI_SUFFIX="${PROJECT_NAME}/daily/${BRANCH_NAME}/${DAY_PATH}_xfer"
+  COMMON_URI_SUFFIX="${PROJECT_NAME}/daily/${BRANCH_NAME}/${DAY_PATH}${PATH_SUFFIX}"
 else
   if [[ "${COMMIT_TAG}" == "unknown" ]]; then
     echo "Commit hash (-s option) required when continuous build is requested via -c"
     usage
     exit 1
   fi
-  COMMON_URI_SUFFIX="${PROJECT_NAME}/continuous/${COMMIT_TAG}_xfer"
+  COMMON_URI_SUFFIX="${PROJECT_NAME}/continuous/${COMMIT_TAG}${PATH_SUFFIX}"
 fi
 
 GCS_PATH="gs://${COMMON_URI_SUFFIX}"

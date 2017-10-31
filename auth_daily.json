@@ -72,7 +72,7 @@
 	"mixer",
 	"pilot"
       ],
-      "args": [ "./store_artifacts.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
+      "args": [ "./store_artifacts.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer", "-x", "_xfer" ]
     }
   ],
   "timeout": "3600s",

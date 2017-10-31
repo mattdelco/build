@@ -49,10 +49,28 @@
         }
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
+      "env": [ "GOPATH=/tmp/gopath" ],
+      "dir": "pilot",
+      "id": "pilot",
+      "waitFor": [
+	"downloadSource"
+      ],
+      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"],
+      "entrypoint": "bash"
+    },
+    {
+      "volumes": [
+        {
+          "name": "buildxfer",
+          "path": "/xfer"
+        }
+      ],
+      "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "id": "storeArtifacts",
       "waitFor": [
 	"auth",
-	"mixer"
+	"mixer",
+	"pilot"
       ],
       "args": [ "./store_artifacts.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
     }

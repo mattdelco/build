@@ -1,0 +1,39 @@
+{
+  "steps": [
+    {
+      "volumes": [
+        {
+          "name": "buildxfer",
+          "path": "/xfer"
+        }
+      ],
+      "name": "gcr.io/istio-io/istio-builder:0.3.2",
+      "args": [ "./download_source_tree.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
+    },
+    {
+      "volumes": [
+        {
+          "name": "buildxfer",
+          "path": "/xfer"
+        }
+      ],
+      "name": "gcr.io/istio-io/istio-builder:0.3.2",
+      "dir": "auth",
+      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
+    },
+    {
+      "volumes": [
+        {
+          "name": "buildxfer",
+          "path": "/xfer"
+        }
+      ],
+      "name": "gcr.io/istio-io/istio-builder:0.3.2",
+      "args": [ "./store_artifacts.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
+    }
+  ],
+  "timeout": "3600s",
+  "tags": [
+    "daily"
+  ]
+}

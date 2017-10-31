@@ -64,7 +64,7 @@
         }
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
-      "args": [ "store_artifacts.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
+      "args": [ "./store_artifacts.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
     }
   ],
   "options": {

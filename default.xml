@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="origin" fetch="git://github.com/mattdelco/" />
+  <default revision="master" remote="origin" />
+
+  <!--project path="api"
+           name="api.git" remote="origin" /-->
+
+  <project path="auth"
+           name="auth.git" remote="origin" />
+
+  <!--project path="broker"
+           name="broker.git" remote="origin" /-->
+
+  <!--project path="istio"
+           name="istio.git" remote="origin" /-->
+
+  <project path="mixer"
+           name="mixer.git" remote="origin" />
+
+  <!--project path="mixerclient"
+           name="mixerclient.git" remote="origin" /-->
+  
+  <project path="pilot"
+           name="pilot.git" remote="origin" />
+
+  <project path="proxy"
+           name="proxy.git" remote="origin" />
+
+</manifest>

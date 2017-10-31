@@ -8,7 +8,7 @@
         }
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
-      "args": [ "./download_source_tree.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-i", "/source", "-o", "/xfer"]
+      "args": [ "./download_source_tree.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
     },
     {
       "volumes": [
@@ -19,7 +19,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "auth",
-      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-i", "/source", "-o", "/xfer"]
+      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
     },
     {
       "volumes": [
@@ -30,7 +30,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "mixer",
-      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-i", "/source", "-o", "/xfer"]
+      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
     },
     {
       "volumes": [
@@ -42,7 +42,7 @@
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "env": [ "GOPATH=/tmp/gopath" ],
       "dir": "pilot",
-      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-i", "/source", "-o", "/xfer"],
+      "args": [ "./bin/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"],
       "entrypoint": "bash"
     },
     {
@@ -54,7 +54,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "proxy",
-      "args": [ "./script/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-i", "/source", "-o", "/xfer"]
+      "args": [ "./script/daily_cloud_builder.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
     },
     {
       "volumes": [

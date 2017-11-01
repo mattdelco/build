@@ -14,7 +14,8 @@ COMMIT_TAG="unknown"
 VERSION_FILE="istio.commit.txt"
 BUILD_TYPE="daily"
 
-DAY_PATH=`date +%Y%m%d`
+DAY_PATH=`TZ=:America/Los_Angeles date +%Y%m%d`
+#DAY_PATH=`TZ=:UTC date +%Y%m%d`
 PROJECT_NAME="istio-testing"
 BRANCH_NAME="unknown"
 ARTIFACTS_OUTPUT_PATH=""

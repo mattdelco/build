@@ -51,7 +51,7 @@ cp .repo/manifest.xml "${ARTIFACTS_OUTPUT_PATH}/"
 # 0.3.0-20171027-d324edf901
 # though current istio.VERSION has hashes of components (for FORTIO_TAG is 0.2.7)
 
-if [[ "${VERSION)_FILE}" != "" ]]; then
+if [[ "${VERSION_FILE}" != "" ]]; then
   VERSION_PATH="${ARTIFACTS_OUTPUT_PATH}/${VERSION_FILE}"
   echo "version $PRODUCT_VERSION" >  "${VERSION_PATH}"
   echo "build   $BUILD_ID"        >> "${VERSION_PATH}"

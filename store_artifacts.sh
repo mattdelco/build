@@ -67,7 +67,7 @@ GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
 
 gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
 
-for TAR_PATH in "${ARTIFACTS_OUTPUT_PATH}/docker/*.tar"
+for TAR_PATH in ${ARTIFACTS_OUTPUT_PATH}/docker/*.tar
 do
   TAR_NAME=$(basename "$TAR_PATH")
   IMAGE_NAME="${TAR_NAME%.*}"

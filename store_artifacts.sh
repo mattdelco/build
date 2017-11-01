@@ -62,9 +62,20 @@ else
 fi
 
 GCS_PATH="gs://${COMMON_URI_SUFFIX}"
-# GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
+GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
 
 gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
+
+for TAR_PATH in docker/*.tar
+do
+  TAR_NAME=$(basename "$TAR_PATH")
+  IMAGE_NAME="${TAR_NAME%.*}"
+  echo converting "${TAR_PATH}" to "${IMAGE_NAME}"
+  docker import "${TAR_PATH}" "${IMAGE_NAME}:0.0.0"
+  docker images
+  docker tag "${IMAGE_NAME}:0.0.0" "${GCR_PATH}/${IMAGE_NAME}:0.0.0"
+  gcloud docker -- push "${GCR_PATH}/${IMAGE_NAME}:0.0.0"
+done
 
 echo "${COMMIT_TAG}" > "${VERSION_FILE}"
 gsutil cp "${VERSION_FILE}" "${GCS_PATH}/"

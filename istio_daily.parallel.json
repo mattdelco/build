@@ -9,7 +9,7 @@
       ],
       "id": "downloadSource",
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
-      "args": [ "./download_source_tree.sh", "-d", "-b", "$BRANCH_NAME", "-p", "$PROJECT_ID", "-o", "/xfer"]
+      "args": [ "./download_source_tree.sh", "-u", "https://github.com/mattdelco/manifest" ]
     },
     {
       "volumes": [

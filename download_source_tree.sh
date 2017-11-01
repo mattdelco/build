@@ -5,33 +5,25 @@ set -o nounset
 set -o pipefail
 set -x
 
-mkdir manifest
-cp ./default.xml manifest/
-pushd manifest
-git init
-git add default.xml
-# git commit insists on "Please tell me who you are."
-git config user.email "root@localhost"
-git config user.name "root"
-git commit -m "local manifest"
-popd
-./repo init -u ./manifest
+MANIFEST_REPO_URL=""
+MANIFEST_FILE="default.xml"
+
+function usage() {
+  echo "$0
+    -m <file>  name of manifest in repo (optional, defaults to default.xml)
+    -u <url>   url for git repo containing manifest"
+  exit 1
+}
+
+while getopts m:u: arg ; do
+  case "${arg}" in
+    m) MANIFEST_FILE="${MANIFEST_FILE}";;
+    u) MANIFEST_REPO_URL="${OPTARG}";;
+    *) usage;;
+  esac
+done
+
+[[ -z "${MANIFEST_REPO_URL}" ]] && usage
+
+./repo init -u "${MANIFEST_REPO_URL}" -m "${MANIFEST_FILE}"
 ./repo sync
-
-#mkdir /source/auth
-#mkdir /source/auth/bin
-#mkdir /source/mixer
-#mkdir /source/mixer/bin
-#mkdir /source/pilot
-#mkdir /source/pilot/bin
-#mkdir /source/proxy
-#mkdir /source/proxy/script
-
-#for BUILD_FILE in /source/auth/bin/daily_cloud_builder.sh /source/mixer/bin/daily_cloud_builder.sh /source/pilot/bin/daily_cloud_builder.sh /source/proxy/script/daily_cloud_builder.sh /source/store_artifacts.sh
-#do
-#  echo "#!/bin/bash" > $BUILD_FILE
-#  RESULT_FILE="$(basename ${BUILD_FILE}).results"
-#  echo "touch /xfer/${RESULT_FILE}" >> $BUILD_FILE
-#  echo "ls -l /xfer" >> $BUILD_FILE
-#  chmod u+x $BUILD_FILE
-#done

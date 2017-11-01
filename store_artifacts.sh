@@ -5,10 +5,10 @@ set -o nounset
 set -o pipefail
 set -x
 
-echo "Workspace contains:"
-ls -l /workspace/*
 echo "xfer contains:"
 ls -l /xfer
+echo "docker contains:"
+ls -l /xfer/docker
 
 COMMIT_TAG="unknown"
 VERSION_FILE="istio.commit.txt"
@@ -67,7 +67,7 @@ GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
 
 gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
 
-for TAR_PATH in docker/*.tar
+for TAR_PATH in "$(ARTIFACTS_OUTPUT_PATH}/docker/*.tar"
 do
   TAR_NAME=$(basename "$TAR_PATH")
   IMAGE_NAME="${TAR_NAME%.*}"

@@ -24,7 +24,7 @@ function usage() {
   exit 1
 }
 
-while getopts b:m:o:u:v: arg ; do
+while getopts b:i:m:o:u:v: arg ; do
   case "${arg}" in
     b) MANIFEST_BRANCH="${OPTARG}";;
     i) BUILD_ID="${OPTARG}";;

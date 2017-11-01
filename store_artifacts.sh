@@ -40,7 +40,7 @@ COMMON_URI_SUFFIX="${GC_BUCKET}/daily/${BRANCH_NAME}/${DAY_PATH}"
 GCS_PATH="gs://${COMMON_URI_SUFFIX}"
 GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
 
-gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GS_PATH}/"
+gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
 
 # TO-DO: read version from file
 BUILD_VERSION="0.0.0"

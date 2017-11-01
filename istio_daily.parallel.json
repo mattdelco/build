@@ -88,7 +88,7 @@
 	"pilot",
 	"proxy"
       ],
-      "args": [ "./store_artifacts.sh", "-d", "-b", "$_BRANCH_TO_BUILD", "-p", "$PROJECT_ID", "-o", "/xfer", "-x", "_dailyParallel" ]
+      "args": [ "./store_artifacts.sh", "-d", "-b", "$_BRANCH_TO_BUILD", "-p", "$PROJECT_ID", "-o", "/xfer", "-x", "_dailyparallel" ]
     }
   ],
   "options": {

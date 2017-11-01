@@ -19,7 +19,7 @@ function usage() {
 
 while getopts b:m:u: arg ; do
   case "${arg}" in
-    b) MANIFEST_BRANCH="${OPTARG}"
+    b) MANIFEST_BRANCH="${OPTARG}";;
     m) MANIFEST_FILE="${OPTARG}";;
     u) MANIFEST_REPO_URL="${OPTARG}";;
     *) usage;;

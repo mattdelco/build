@@ -5,78 +5,57 @@ set -o nounset
 set -o pipefail
 set -x
 
-echo "xfer contains:"
-ls -l /xfer
-echo "docker contains:"
-ls -l /xfer/docker
-
-COMMIT_TAG="unknown"
-VERSION_FILE="istio.commit.txt"
-BUILD_TYPE="daily"
+DONE_FILE="istio.done.txt"
+VERSION_FILE=""
 
 DAY_PATH=`TZ=:America/Los_Angeles date +%Y%m%d`
 #DAY_PATH=`TZ=:UTC date +%Y%m%d`
-PROJECT_NAME="istio-testing"
+GC_BUCKET="istio-testing"
 BRANCH_NAME="unknown"
 ARTIFACTS_OUTPUT_PATH=""
 PATH_SUFFIX=""
 
 function usage() {
   echo "$0
-    -b <name> name of branch
-    -c        continuous (per-submit) build rather than daily
-    -d        daily build (default)
-    -o        path to store build artifacts instead of GCS/GCR/docker
-    -p        specifies project name (default $PROJECT_NAME)
-    -s <hash> sha1 commit hash of change
-    -x        extra path suffix at end"
+    -b <name> name of branch (default is $BRANCH_NAME)
+    -o <path> path where build artifacts were stored
+    -p <name> specifies GCS/GCR bucket (default is $GC_BUCKET)
+    -v <name> name of version file to use in output dir (optional)"
   exit 1
 }
 
-while getopts b:cdo:p:s:x: arg ; do
+while getopts b:o:p:v: arg ; do
   case "${arg}" in
     b) BRANCH_NAME="${OPTARG}";;
-    c) BUILD_TYPE="continuous";;
-    d) ;;
     o) ARTIFACTS_OUTPUT_PATH="${OPTARG}";;
-    p) PROJECT_NAME="${OPTARG}";;
-    s) COMMIT_TAG="${OPTARG}";;
-    x) PATH_SUFFIX="${OPTARG}";;
+    p) GC_BUCKET="${OPTARG}";;
+    v) VERSION_FILE="${OPTARG}";;
     *) usage;;
   esac
 done
 
-if [[ "${BUILD_TYPE}" == "daily" ]]; then
-  if [[ "${BRANCH_NAME}" == "unknown" ]]; then
-    echo "Branch name (-b option) required for a daily build"
-    usage
-    exit 1
-  fi
-  COMMON_URI_SUFFIX="${PROJECT_NAME}/daily/${BRANCH_NAME}/${DAY_PATH}${PATH_SUFFIX}"
-else
-  if [[ "${COMMIT_TAG}" == "unknown" ]]; then
-    echo "Commit hash (-s option) required when continuous build is requested via -c"
-    usage
-    exit 1
-  fi
-  COMMON_URI_SUFFIX="${PROJECT_NAME}/continuous/${COMMIT_TAG}${PATH_SUFFIX}"
-fi
+[[ -z "${ARTIFACTS_OUTPUT_PATH}" ]] && usage
 
+COMMON_URI_SUFFIX="${GC_BUCKET}/daily/${BRANCH_NAME}/${DAY_PATH}"
 GCS_PATH="gs://${COMMON_URI_SUFFIX}"
 GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
 
-gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
+gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GS_PATH}/"
 
+# TO-DO: read version from file
+BUILD_VERSION="0.0.0"
 for TAR_PATH in ${ARTIFACTS_OUTPUT_PATH}/docker/*.tar
 do
   TAR_NAME=$(basename "$TAR_PATH")
   IMAGE_NAME="${TAR_NAME%.*}"
-  echo converting "${TAR_PATH}" to "${IMAGE_NAME}"
-  docker import "${TAR_PATH}" "${IMAGE_NAME}:0.0.0"
-  docker images
-  docker tag "${IMAGE_NAME}:0.0.0" "${GCR_PATH}/${IMAGE_NAME}:0.0.0"
-  gcloud docker -- push "${GCR_PATH}/${IMAGE_NAME}:0.0.0"
+  docker import "${TAR_PATH}" "${IMAGE_NAME}:${BUILD_VERSION}"
+  docker tag "${IMAGE_NAME}:${BUILD_VERSION}" "${GCR_PATH}/${IMAGE_NAME}:${BUILD_VERSION}"
+  gcloud docker -- push "${GCR_PATH}/${IMAGE_NAME}:${BUILD_VERSION}"
 done
 
-echo "${COMMIT_TAG}" > "${VERSION_FILE}"
-gsutil cp "${VERSION_FILE}" "${GCS_PATH}/"
+if [[ "${VERSION_FILE}" != "" ]]; then
+  cp "${ARTIFACTS_OUTPUT_PATH}/${VERSION_FILE}" "${DONE_FILE}"
+else
+  touch "${DONE_FILE}"  
+fi
+gsutil cp "${DONE_FILE}" "${GCS_PATH}/"

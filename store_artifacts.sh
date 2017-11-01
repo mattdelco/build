@@ -59,3 +59,5 @@ else
   touch "${DONE_FILE}"  
 fi
 gsutil cp "${DONE_FILE}" "${GCS_PATH}/"
+
+echo "Build completed"

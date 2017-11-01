@@ -32,7 +32,7 @@ function usage() {
   exit 1
 }
 
-while getopts b:cdo:p:s: arg ; do
+while getopts b:cdo:p:s:x: arg ; do
   case "${arg}" in
     b) BRANCH_NAME="${OPTARG}";;
     c) BUILD_TYPE="continuous";;

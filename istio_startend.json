@@ -3,7 +3,7 @@
     {
       "volumes": [
         {
-          "name": "buildxfer",
+          "name": "buildoutput",
           "path": "/output"
         }
       ],
@@ -13,7 +13,7 @@
     {
       "volumes": [
         {
-          "name": "buildxfer",
+          "name": "buildoutput",
           "path": "/output"
         }
       ],
@@ -21,8 +21,5 @@
       "args": [ "./store_artifacts.sh", "-p", "$_GS_BUCKET", "-s", "$_SUBDIR_TO_STORE", "-v", "$_VER_STRING", "-o", "/output", "-f", "version.txt", "-i", "$BUILD_ID" ]
     }
   ],
-  "timeout": "3600s",
-  "tags": [
-    "daily"
-  ]
+  "timeout": "3600s"
 }

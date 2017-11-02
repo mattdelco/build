@@ -48,7 +48,7 @@ git config user.name  "root"
 git config user.email "root@localhost"
 git commit -m "temp default manifest"
 popd
-repo init -i "$TEMP_REPO"
+./repo init -u "$TEMP_REPO"
 #./repo init -u "${MANIFEST_REPO_URL}" -m "${MANIFEST_FILE}" -b "${MANIFEST_BRANCH}"
 ./repo sync
 

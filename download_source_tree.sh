@@ -9,15 +9,15 @@ MANIFEST_URL=""
 VER_STRING=""
 BUILD_ID=""
 OUTPUT_PATH=""
-VERSION_FILE=""
+VERSION_FILE="version.txt"
 
 function usage() {
   echo "$0
-    -f <file> name of version file to generate in -o dir        (optional)
+    -f <file> name of version file to generate in -o dir        (optional, default ${VERSION_FILE} )
     -i <id>   build ID from cloud builder                       (optional)
     -o <path> path where build output/artifacts were stored     (required)
     -u <url>  URL to xml file with manifest to use with repo    (required)
-    -v <ver>  version string                                    (required)"
+    -v <ver>  version string (MUST be lowercase letters)        (required)"
   exit 1
 }
 
@@ -32,9 +32,17 @@ while getopts f:i:o:u:v: arg ; do
   esac
 done
 
+[[ -z "${VERSION_FILE}" ]] && usage
 [[ -z "${MANIFEST_URL}" ]] && usage
 [[ -z "${OUTPUT_PATH}" ]] && usage
 [[ -z "${VER_STRING}"   ]] && usage
+
+VER_STRING_LOWER=${VER_STRING,,}
+
+if [[ "$VER_STRING" != "$VER_STRING_LOWER" ]]; then
+  echo "ERROR: version string can not have uppercase letters"
+  usage
+fi
 
 # download specified manifest and add it to a temp
 # repo since repo can't seem to handle a plain file
@@ -59,9 +67,11 @@ popd
 # copy over repo's manifest file to assist reproducibility
 cp .repo/manifest.xml "${OUTPUT_PATH}/"
 
-if [[ "${VERSION_FILE}" != "" ]]; then
-  VERSION_PATH="${OUTPUT_PATH}/${VERSION_FILE}"
-  echo "version=$VER_STRING"       >  "$VERSION_PATH"
-  echo "buildID=$BUILD_ID"         >> "$VERSION_PATH"
-  echo "manifestURL=$MANIFEST_URL" >> "$VERSION_PATH"
-fi
+VERSION_PATH="${OUTPUT_PATH}/${VERSION_FILE}"
+
+# output.version is used to help store_artifacts.sh diffentiate
+# between current vs. older branches
+echo "output.version=1"          > "$VERSION_PATH"
+echo "version=$VER_STRING"       >> "$VERSION_PATH"
+echo "buildID=$BUILD_ID"         >> "$VERSION_PATH"
+echo "manifestURL=$MANIFEST_URL" >> "$VERSION_PATH"

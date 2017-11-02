@@ -24,7 +24,7 @@
       "waitFor": [
 	"downloadSource"
       ],
-      "args": [ "./bin/daily_cloud_builder2.sh", "-o", "/output" ]
+      "args": [ "./bin/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -39,7 +39,7 @@
       "waitFor": [
 	"downloadSource"
       ],
-      "args": [ "./bin/daily_cloud_builder2.sh", "-o", "/output" ]
+      "args": [ "./bin/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -55,7 +55,7 @@
       "waitFor": [
 	"downloadSource"
       ],
-      "args": [ "./bin/daily_cloud_builder2.sh", "-o", "/output" ],
+      "args": [ "./bin/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ],
       "entrypoint": "bash"
     },
     {
@@ -71,7 +71,7 @@
       "waitFor": [
 	"downloadSource"
       ],
-      "args": [ "./script/daily_cloud_builder2.sh", "-o", "/output" ]
+      "args": [ "./script/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -86,7 +86,7 @@
       "waitFor": [
 	"downloadSource"
       ],
-      "args": [ "./release/daily_cloud_builder2.sh", "-o", "/output" ]
+      "args": [ "./release/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -103,7 +103,7 @@
 	"istio",
 	"pilot"
       ],
-      "args": [ "./release/create_release_archives2.sh", "-o", "/output", "-v", "$_VER_STRING" ]
+      "args": [ "./release/create_release_archives2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [

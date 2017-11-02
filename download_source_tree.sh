@@ -43,6 +43,9 @@ curl "$MANIFEST_URL" > "${TEMP_REPO}/${MFEST_XML}"
 pushd "$TEMP_REPO"
 git init
 git add $MFEST_XML
+# git insists on knowing the ID of the submitter
+git config user.name  "root"
+git config user.email "root@localhost"
 git commit -m "temp default manifest"
 popd
 repo init -i "$TEMP_REPO"

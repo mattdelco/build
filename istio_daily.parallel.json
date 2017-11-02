@@ -86,7 +86,7 @@
       "waitFor": [
 	"downloadSource"
       ],
-      "args": [ "./release/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./bin/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -103,7 +103,7 @@
 	"istio",
 	"pilot"
       ],
-      "args": [ "./release/create_release_archives2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./bin/create_release_archives2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [

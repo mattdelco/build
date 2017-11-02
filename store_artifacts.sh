@@ -48,6 +48,11 @@ for TAR_PATH in ${ARTIFACTS_OUTPUT_PATH}/docker/*.tar
 do
   TAR_NAME=$(basename "$TAR_PATH")
   IMAGE_NAME="${TAR_NAME%.*}"
+
+  # if no docker/ directory or directory has no tar files
+  if [[ "${IMAGE_NAME}" == "*" ]]; then
+    break
+  fi
   docker import "${TAR_PATH}" "${IMAGE_NAME}:${BUILD_VERSION}"
   docker tag "${IMAGE_NAME}:${BUILD_VERSION}" "${GCR_PATH}/${IMAGE_NAME}:${BUILD_VERSION}"
   gcloud docker -- push "${GCR_PATH}/${IMAGE_NAME}:${BUILD_VERSION}"

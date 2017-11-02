@@ -8,7 +8,7 @@
         }
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
-      "args": [ "./download_source_tree.sh", "-u", "_MFEST_REPO_URL", "-b", "$_BRANCH_TO_BUILD", "-m", "$_MFEST_FILE" ]
+      "args": [ "./download_source_tree.sh", "-u", "_MFEST_REPO_URL", "-b", "$_BRANCH_TO_BUILD", "-m", "$_MFEST_FILE", "-o", "/xfer", "-v", "version.txt", "-i", "$BUILD_ID" ]
     },
     {
       "volumes": [
@@ -64,11 +64,11 @@
         }
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
-      "args": [ "./store_artifacts.sh", "-d", "-b", "$_BRANCH_TO_BUILD", "-p", "$PROJECT_ID", "-o", "/xfer", "-x", "_daily" ]
+      "args": [ "./store_artifacts.sh", "-b", "$_BRANCH_TO_BUILD", "-p", "$_GS_BUCKET", "-o", "/xfer", "-v", "version.txt" ]
     }
   ],
   "options": {
-    "machineType": "N1_STANDARD_8"
+    "machineType": "N1_HIGHCPU_8"
   },
   "timeout": "3600s",
   "tags": [

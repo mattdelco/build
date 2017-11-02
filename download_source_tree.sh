@@ -36,10 +36,14 @@ done
 [[ -z "${OUTPUT_PATH}" ]] && usage
 [[ -z "${VER_STRING}"   ]] && usage
 
+# download specified manifest and add it to a temp
+# repo since repo can't seem to handle a plain file
+
 TEMP_REPO="temp_manifest"
 MFEST_XML="default.xml"
 mkdir "$TEMP_REPO"
-curl "$MANIFEST_URL" > "${TEMP_REPO}/${MFEST_XML}"
+# github likes using directs so using -L to follow them
+curl -L "$MANIFEST_URL" > "${TEMP_REPO}/${MFEST_XML}"
 pushd "$TEMP_REPO"
 git init
 git add $MFEST_XML

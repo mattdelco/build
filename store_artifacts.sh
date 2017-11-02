@@ -8,43 +8,48 @@ set -x
 DONE_FILE="istio.done.txt"
 VERSION_FILE=""
 
-DAY_PATH=`TZ=:America/Los_Angeles date +%Y%m%d`
-#DAY_PATH=`TZ=:UTC date +%Y%m%d`
-GC_BUCKET="istio-testing"
-BRANCH_NAME="unknown"
-ARTIFACTS_OUTPUT_PATH=""
-PATH_SUFFIX=""
+GC_BUCKET=""
+GC_SUBDIR="builds/unknown"
+VER_STRING=""
+OUTPUT_PATH=""
+VERSION_FILE=""
+BUILD_ID=""
 
 function usage() {
   echo "$0
-    -b <name> name of branch (default is $BRANCH_NAME)
-    -o <path> path where build artifacts were stored
-    -p <name> specifies GCS/GCR bucket (default is $GC_BUCKET)
-    -v <name> name of version file to use in output dir (optional)"
+    -d <file> name of file to create to signal completion       (optional, default ${DONE_FILE})
+    -f <file> name of file to use for contents of -d            (optional, empty file if not set)
+    -i <id>   build ID from cloud builder                       (optional, currently unused)
+    -o <path> path where build output/artifacts were stored     (required)
+    -p <name> specifies GCS/GCR bucket to store build           (required)
+    -s <path> path to store build on GCS/GCR (-v is appended)   (optional, default ${GC_SUBDIR})
+    -v <ver>  version string (appended to -? option)            (required)"
   exit 1
 }
 
-while getopts b:o:p:v: arg ; do
+while getopts f:i:o:p:s:v: arg ; do
   case "${arg}" in
-    b) BRANCH_NAME="${OPTARG}";;
-    o) ARTIFACTS_OUTPUT_PATH="${OPTARG}";;
+    f) VERSION_FILE="${OPTARG}";;
+    i) BUILD_ID="${OPTARG}";;
+    o) OUTPUT_PATH="${OPTARG}";;
     p) GC_BUCKET="${OPTARG}";;
-    v) VERSION_FILE="${OPTARG}";;
+    s) GC_SUBDIR="${OPTARG}";;
+    v) VER_STRING="${OPTARG}";;
     *) usage;;
   esac
 done
 
-[[ -z "${ARTIFACTS_OUTPUT_PATH}" ]] && usage
+[[ -z "${OUTPUT_PATH}"  ]] && usage
+[[ -z "${GC_BUCKET}"    ]] && usage
+[[ -z "${VER_STRING}"   ]] && usage
 
-COMMON_URI_SUFFIX="${GC_BUCKET}/daily/${BRANCH_NAME}/${DAY_PATH}"
+COMMON_URI_SUFFIX="${GC_BUCKET}/${GC_SUBDIR}/${VER_STRING}"
 GCS_PATH="gs://${COMMON_URI_SUFFIX}"
 GCR_PATH="gcr.io/${COMMON_URI_SUFFIX}"
 
-gsutil -m cp -r "${ARTIFACTS_OUTPUT_PATH}/*" "${GCS_PATH}/"
+gsutil -m cp -r "${OUTPUT_PATH}/*" "${GCS_PATH}/"
 
-# TO-DO: read version from file
-BUILD_VERSION="0.0.0"
-for TAR_PATH in ${ARTIFACTS_OUTPUT_PATH}/docker/*.tar
+for TAR_PATH in ${OUTPUT_PATH}/docker/*.tar
 do
   TAR_NAME=$(basename "$TAR_PATH")
   IMAGE_NAME="${TAR_NAME%.*}"
@@ -53,13 +58,13 @@ do
   if [[ "${IMAGE_NAME}" == "*" ]]; then
     break
   fi
-  docker import "${TAR_PATH}" "${IMAGE_NAME}:${BUILD_VERSION}"
-  docker tag "${IMAGE_NAME}:${BUILD_VERSION}" "${GCR_PATH}/${IMAGE_NAME}:${BUILD_VERSION}"
-  gcloud docker -- push "${GCR_PATH}/${IMAGE_NAME}:${BUILD_VERSION}"
+  docker import "${TAR_PATH}" "${IMAGE_NAME}:${VER_STRING}"
+  docker tag "${IMAGE_NAME}:${VER_STRING}" "${GCR_PATH}/${IMAGE_NAME}:${VER_STRING}"
+  gcloud docker -- push "${GCR_PATH}/${IMAGE_NAME}:${VER_STRING}"
 done
 
 if [[ "${VERSION_FILE}" != "" ]]; then
-  cp "${ARTIFACTS_OUTPUT_PATH}/${VERSION_FILE}" "${DONE_FILE}"
+  cp "${OUTPUT_PATH}/${VERSION_FILE}" "${DONE_FILE}"
 else
   touch "${DONE_FILE}"  
 fi

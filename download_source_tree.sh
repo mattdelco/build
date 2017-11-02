@@ -5,54 +5,56 @@ set -o nounset
 set -o pipefail
 set -x
 
-MANIFEST_REPO_URL=""
-MANIFEST_BRANCH="master"
-MANIFEST_FILE="default.xml"
-BUILD_ID="unknown"
-PRODUCT_VERSION="0.0.0"
-ARTIFACTS_OUTPUT_PATH=""
+MANIFEST_URL=""
+VER_STRING=""
+BUILD_ID=""
+OUTPUT_PATH=""
 VERSION_FILE=""
 
 function usage() {
   echo "$0
-    -b <branch>  branch to use in manifest (optional, defaults to $MANIFEST_BRANCH)
-    -i <id>      unique identier of build (optional, defaults to $BUILD_ID)
-    -m <file>    name of manifest in repo (optional, defaults to $MANIFEST_FILE)
-    -o <path>    path where build artifacts are stored     
-    -u <url>     url for git repo containing manifest
-    -v <name>    name of version file to generate in output dir (optional)"
+    -f <file> name of version file to generate in -o dir        (optional)
+    -i <id>   build ID from cloud builder                       (optional)
+    -o <path> path where build output/artifacts were stored     (required)
+    -u <url>  URL to xml file with manifest to use with repo    (required)
+    -v <ver>  version string                                    (required)"
   exit 1
 }
 
-while getopts b:i:m:o:u:v: arg ; do
+while getopts f:i:o:u:v: arg ; do
   case "${arg}" in
-    b) MANIFEST_BRANCH="${OPTARG}";;
+    f) VERSION_FILE="${OPTARG}";;
     i) BUILD_ID="${OPTARG}";;
-    m) MANIFEST_FILE="${OPTARG}";;
-    o) ARTIFACTS_OUTPUT_PATH="${OPTARG}";;
-    u) MANIFEST_REPO_URL="${OPTARG}";;
-    v) VERSION_FILE="${OPTARG}";;
+    o) OUTPUT_PATH="${OPTARG}";;
+    u) MANIFEST_URL="${OPTARG}";;
+    v) VER_STRING="${OPTARG}";;
     *) usage;;
   esac
 done
 
-[[ -z "${MANIFEST_REPO_URL}" ]] && usage
-[[ -z "${ARTIFACTS_OUTPUT_PATH}" ]] && usage
+[[ -z "${MANIFEST_URL}" ]] && usage
+[[ -z "${OUTPUT_PATH}" ]] && usage
+[[ -z "${VER_STRING}"   ]] && usage
 
-./repo init -u "${MANIFEST_REPO_URL}" -m "${MANIFEST_FILE}" -b "${MANIFEST_BRANCH}"
+TEMP_REPO="temp_manifest"
+MFEST_XML="default.xml"
+mkdir "$TEMP_REPO"
+curl "$MANIFEST_URL" > "${TEMP_REPO}/${MFEST_XML}"
+pushd "$TEMP_REPO"
+git init
+git add $MFEST_XML
+git commit -m "temp default manifest"
+popd
+repo init -i "$TEMP_REPO"
+#./repo init -u "${MANIFEST_REPO_URL}" -m "${MANIFEST_FILE}" -b "${MANIFEST_BRANCH}"
 ./repo sync
 
 # copy over repo's manifest file to assist reproducibility
-cp .repo/manifest.xml "${ARTIFACTS_OUTPUT_PATH}/"
-
-# TO-DO: read/determine product version
-# As of Nov 1 the spec says:
-# echo "$(cat istio.VERSION)-$(date '+%Y%m%d')-$(repo manifest -r | sha256sum | head -c 10)"
-# 0.3.0-20171027-d324edf901
-# though current istio.VERSION has hashes of components (for FORTIO_TAG is 0.2.7)
+cp .repo/manifest.xml "${OUTPUT_PATH}/"
 
 if [[ "${VERSION_FILE}" != "" ]]; then
-  VERSION_PATH="${ARTIFACTS_OUTPUT_PATH}/${VERSION_FILE}"
-  echo "version $PRODUCT_VERSION" >  "${VERSION_PATH}"
-  echo "build   $BUILD_ID"        >> "${VERSION_PATH}"
+  VERSION_PATH="${OUTPUT_PATH}/${VERSION_FILE}"
+  echo "version=$VER_STRING"       >  "$VERSION_PATH"
+  echo "buildID=$BUILD_ID"         >> "$VERSION_PATH"
+  echo "manifestURL=$MANIFEST_URL" >> "$VERSION_PATH"
 fi

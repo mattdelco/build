@@ -58,6 +58,28 @@
     },
     {
       "volumes": [
+	{
+          "name": "buildoutput",
+          "path": "/output"
+        }
+      ],
+      "name": "gcr.io/istio-io/istio-builder:0.3.2",
+      "dir": "istio",
+      "args": [ "./release/daily_cloud_builder2.sh", "-o", "/output" ]
+    },
+    {
+      "volumes": [
+	{
+          "name": "buildoutput",
+          "path": "/output"
+        }
+      ],
+      "name": "gcr.io/istio-io/istio-builder:0.3.2",
+      "dir": "istio",
+      "args": [ "./release/create_release_archives2.sh", "-o", "/output", "-v", "$_VER_STRING" ]
+    },
+    {
+      "volumes": [
         {
           "name": "buildoutput",
           "path": "/output"

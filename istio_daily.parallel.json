@@ -92,7 +92,7 @@
     }
   ],
   "options": {
-    "machineType": "N1_HIGHCPU_8"
+    "machineType": "N1_HIGHCPU_32"
   },
   "timeout": "3600s",
   "tags": [

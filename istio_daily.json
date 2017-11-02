@@ -19,7 +19,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "auth",
-      "args": [ "./bin/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./bin/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -30,7 +30,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "mixer",
-      "args": [ "./bin/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./bin/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -42,7 +42,7 @@
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "env": [ "GOPATH=/tmp/gopath" ],
       "dir": "pilot",
-      "args": [ "./bin/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ],
+      "args": [ "./bin/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ],
       "entrypoint": "bash"
     },
     {
@@ -54,7 +54,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "proxy",
-      "args": [ "./script/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./script/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -65,7 +65,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "istio",
-      "args": [ "./release/daily_cloud_builder2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./bin/daily_cloud_builder2.sh", "-t", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
@@ -76,7 +76,7 @@
       ],
       "name": "gcr.io/istio-io/istio-builder:0.3.2",
       "dir": "istio",
-      "args": [ "./release/create_release_archives2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
+      "args": [ "./bin/create_release_archives2.sh", "-v", "$_VER_STRING", "-o", "/output" ]
     },
     {
       "volumes": [
